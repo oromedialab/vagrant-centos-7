@@ -1,0 +1,6 @@
+configs:
+    use: 'home'
+    office:
+        public_ip: '192.168.99.2'
+    home:
+        public_ip: '192.168.99.1'
