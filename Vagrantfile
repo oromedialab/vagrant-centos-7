@@ -27,8 +27,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # config
   config.vm.box = VAGRANT_CONFIG['box']
-  config.vm.network "forwarded_port", guest: 80, host: 8080
-  config.vm.network "forwarded_port", guest: 443, host: 4443
+  config.vm.network "forwarded_port", guest: 80, host: VAGRANT_CONFIG['http_port']
+  config.vm.network "forwarded_port", guest: 443, host: VAGRANT_CONFIG['https_port']
   config.vm.network "private_network", ip: VAGRANT_CONFIG['box_ip']
   config.vm.synced_folder '.', SYNC_FOLDER
   config.vm.provider "virtualbox" do |vb|
