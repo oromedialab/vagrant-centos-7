@@ -6,3 +6,5 @@ configs:
     git:
         name: 'Ibrahim Azhar'
         email: 'azhar@iarmar.com'
+    httpd:
+        document_root: /var/www/html/:DIRNAME/public

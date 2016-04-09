@@ -9,11 +9,12 @@ VAGRANTFILE_API_VERSION = '2'
 
 CURRENT_DIR    = File.dirname(File.expand_path(__FILE__))
 DIRNAME        = File.basename(Dir.getwd)
-DOCUMENT_ROOT  = '/var/www/html/'+DIRNAME
 CONFIG_FILE    = CURRENT_DIR+'/config.yaml'
 CONFIGS        = YAML.load_file(CONFIG_FILE)
 VAGRANT_CONFIG = CONFIGS['configs']['vagrant']
 SCRIPT_PATH    = CURRENT_DIR+'/scripts/'
+DOCUMENT_ROOT  = CONFIGS['configs']['httpd']['document_root']
+DOCUMENT_ROOT.sub! ':DIRNAME', DIRNAME
 
 # validate box_ip
 if !!(IPAddr.new(VAGRANT_CONFIG['box_ip']) rescue nil).nil?
@@ -35,17 +36,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # provisions
   config.vm.provision :shell, path: SCRIPT_PATH + "pre-configure.sh"
   config.vm.provision :shell, path: SCRIPT_PATH + "wget.sh"
-  config.vm.provision :shell, path: SCRIPT_PATH + "git.sh"
+  config.vm.provision :shell, path: SCRIPT_PATH + "git.sh", args: [CONFIGS['configs']['git']['name'], CONFIGS['configs']['git']['email']]
   config.vm.provision :shell, path: SCRIPT_PATH + "php.sh"
   config.vm.provision :shell, path: SCRIPT_PATH + "mysql.sh"
   config.vm.provision :shell, path: SCRIPT_PATH + "httpd.sh"
   config.vm.provision :shell, path: SCRIPT_PATH + "composer.sh"
   config.vm.provision :shell, path: SCRIPT_PATH + "puppet.sh"
-  config.vm.provision :shell, path: SCRIPT_PATH + "post-configure.sh"
+  config.vm.provision :shell, path: SCRIPT_PATH + "post-configure.sh", args: [DOCUMENT_ROOT]
 
-  # config.vm.provision :puppet do |puppet|
-  #   puppet.manifests_path = 'puppet/manifests'
-  # end
   # Port forwarding using the plugin (vagrant-triggers)
   config.trigger.after [:provision, :up, :reload] do
       system('echo "
@@ -54,7 +52,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         " | sudo pfctl -ef -; echo "==> Fowarding Ports: 80 -> 8080, 443 -> 4443 & Enabling pf"'
       )
   end
+
   config.trigger.after [:halt, :destroy] do
     system("sudo pfctl -df /etc/pf.conf > /dev/null 2>&1; echo '==> Removing Port Forwarding & Disabling pf'")
   end
+
 end
