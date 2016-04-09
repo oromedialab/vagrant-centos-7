@@ -3,6 +3,9 @@ configs:
         box: 'centos/7'
         memory: '1024'
         box_ip: '192.168.99.1'
+        http_port: '8080'
+        https_port: '4443'
+        sync_folder: /var/www/html/:DIRNAME
     git:
         name: 'Ibrahim Azhar'
         email: 'azhar@iarmar.com'
