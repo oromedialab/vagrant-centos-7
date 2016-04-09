@@ -1,4 +1,8 @@
 configs:
-    box: 'centos/7'
-    memory: '1024'
-    box_ip: '192.168.99.1'
+    vagrant:
+        box: 'centos/7'
+        memory: '1024'
+        box_ip: '192.168.99.1'
+    git:
+        name: 'Ibrahim Azhar'
+        email: 'azhar@iarmar.com'
