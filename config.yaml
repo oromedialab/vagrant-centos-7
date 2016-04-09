@@ -1,6 +1,4 @@
 configs:
-    use: 'home'
-    office:
-        public_ip: '192.168.99.2'
-    home:
-        public_ip: '192.168.99.1'
+    box: 'centos/7'
+    memory: '1024'
+    box_ip: '192.168.99.1'
