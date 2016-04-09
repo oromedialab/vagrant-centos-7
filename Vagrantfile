@@ -12,6 +12,8 @@ DIRNAME        = File.basename(Dir.getwd)
 CONFIG_FILE    = CURRENT_DIR+'/config.yaml'
 CONFIGS        = YAML.load_file(CONFIG_FILE)
 VAGRANT_CONFIG = CONFIGS['configs']['vagrant']
+SYNC_FOLDER    = VAGRANT_CONFIG['sync_folder']
+SYNC_FOLDER.sub! ':DIRNAME', DIRNAME
 SCRIPT_PATH    = CURRENT_DIR+'/scripts/'
 DOCUMENT_ROOT  = CONFIGS['configs']['httpd']['document_root']
 DOCUMENT_ROOT.sub! ':DIRNAME', DIRNAME
@@ -28,7 +30,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.network "forwarded_port", guest: 80, host: 8080
   config.vm.network "forwarded_port", guest: 443, host: 4443
   config.vm.network "private_network", ip: VAGRANT_CONFIG['box_ip']
-  config.vm.synced_folder '.', DOCUMENT_ROOT
+  config.vm.synced_folder '.', SYNC_FOLDER
   config.vm.provider "virtualbox" do |vb|
     vb.customize ["modifyvm", :id, "--memory", VAGRANT_CONFIG['memory']]
   end
@@ -47,9 +49,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Port forwarding using the plugin (vagrant-triggers)
   config.trigger.after [:provision, :up, :reload] do
       system('echo "
-        rdr pass on lo0 inet proto tcp from any to '+VAGRANT_CONFIG['box_ip']+' port 80 -> '+VAGRANT_CONFIG['box_ip']+' port 8080
-        rdr pass on lo0 inet proto tcp from any to '+VAGRANT_CONFIG['box_ip']+' port 443 -> '+VAGRANT_CONFIG['box_ip']+' port 4443
-        " | sudo pfctl -ef -; echo "==> Fowarding Ports: 80 -> 8080, 443 -> 4443 & Enabling pf"'
+        rdr pass on lo0 inet proto tcp from any to '+VAGRANT_CONFIG['box_ip']+' port 80 -> '+VAGRANT_CONFIG['box_ip']+' port '+VAGRANT_CONFIG['http_port']+'
+        rdr pass on lo0 inet proto tcp from any to '+VAGRANT_CONFIG['box_ip']+' port 443 -> '+VAGRANT_CONFIG['box_ip']+' port '+VAGRANT_CONFIG['https_port']+'
+        " | sudo pfctl -ef -; echo "==> Fowarding Ports: 80 -> '+VAGRANT_CONFIG['http_port']+', 443 -> '+VAGRANT_CONFIG['https_port']+' & Enabling pf"'
       )
   end
 
