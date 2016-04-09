@@ -7,6 +7,7 @@ exists() {
 }
 # Set Language
 localectl set-locale LANG=en_US.utf8
+
 # Update yum
 sudo yum update
 if exists mysql; then
@@ -61,13 +62,15 @@ else
 	sudo yum -y install httpd
 	echo "apache installed..."
 fi
-# start and enable apache at boot
+# config
 if exists httpd; then
-	echo "updating apache config..."
+	echo "updating config..."
+	setenforce 0
+	sed -i 's/SELINUX=\(enforcing\|permissive\)/SELINUX=disabled/g' /etc/selinux/config
 	sudo systemctl start httpd.service
 	sudo systemctl restart httpd.service
 	sudo systemctl enable httpd.service
-	echo "apache config updated!"
+	echo "config updated!"
 fi;
 # wget
 if exists wget; then
