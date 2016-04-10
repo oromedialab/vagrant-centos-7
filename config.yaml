@@ -1,17 +1,19 @@
-configs:
-    vagrant:
-        box: 'centos/7'
-        memory: '1024'
-        box_ip: '192.168.99.1'
-        http_port: '8080'
-        https_port: '4443'
-        sync_folder: /var/www/html/:DIRNAME
-    httpd:
-        document_root: /var/www/html/:DIRNAME/public
-    mysql:
-        username: 'root_9UeRq'
-        password: 'uYtN901uTqloiOt6'
-        database: 'project_db'
-    git:
-        name: 'Ibrahim Azhar'
-        email: 'azhar@iarmar.com'
+default:
+    set_env:
+        APP_ENV: 'development'
+vagrant:
+    box: 'centos/7'
+    memory: '1024'
+    box_ip: '192.168.99.1'
+    http_port: '8080'
+    https_port: '4443'
+    sync_folder: /var/www/html/:DIRNAME
+httpd:
+    document_root: /var/www/html/:DIRNAME/public
+mysql:
+    username: 'root_9UeRq'
+    password: 'uYtN901uTqloiOt6'
+    database: 'project_db'
+git:
+    name: 'Ibrahim Azhar'
+    email: 'azhar@iarmar.com'
