@@ -7,6 +7,8 @@ sudo sed -i 's/SELINUX=\(enforcing\|permissive\)/SELINUX=disabled/g' /etc/selinu
 # Change Apache DOCUMENT_ROOT and restart apache
 sudo mkdir -p $1
 sudo sed -i $"s#DocumentRoot \"/var/www/html\"#DocumentRoot \"$1\"#g" /etc/httpd/conf/httpd.conf
-sudo systemctl start httpd.service
+# Enable PHP Errors
+sudo sed -i $"s#display_errors = Off#display_errors = On#g" /etc/php.ini
+sudo sed -i $"s#display_startup_errors = Off#display_startup_errors = On#g" /etc/php.ini
+# Restart apache
 sudo systemctl restart httpd.service
-sudo systemctl enable httpd.service
