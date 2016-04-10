@@ -10,14 +10,15 @@ VAGRANTFILE_API_VERSION = '2'
 CURRENT_DIR    = File.dirname(File.expand_path(__FILE__))
 DIRNAME        = File.basename(Dir.getwd)
 CONFIG_FILE    = CURRENT_DIR+'/config.yaml'
-CONFIGS        = YAML.load_file(CONFIG_FILE)
-VAGRANT_CONFIG = CONFIGS['configs']['vagrant']
-MYSQL_CONFIG   = CONFIGS['configs']['mysql']
-GIT_CONFIG     = CONFIGS['configs']['git']
+CONFIG         = YAML.load_file(CONFIG_FILE)
+DEFAULT_CONFIG = CONFIG['default']
+VAGRANT_CONFIG = CONFIG['vagrant']
+MYSQL_CONFIG   = CONFIG['mysql']
+GIT_CONFIG     = CONFIG['git']
 SYNC_FOLDER    = VAGRANT_CONFIG['sync_folder']
 SYNC_FOLDER.sub! ':DIRNAME', DIRNAME
 SCRIPT_PATH    = CURRENT_DIR+'/scripts/'
-DOCUMENT_ROOT  = CONFIGS['configs']['httpd']['document_root']
+DOCUMENT_ROOT  = CONFIG['httpd']['document_root']
 DOCUMENT_ROOT.sub! ':DIRNAME', DIRNAME
 
 # validate box_ip
@@ -48,6 +49,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision :shell, path: SCRIPT_PATH + "composer.sh"
   config.vm.provision :shell, path: SCRIPT_PATH + "puppet.sh"
   config.vm.provision :shell, path: SCRIPT_PATH + "post-configure.sh", args: [DOCUMENT_ROOT]
+
+  DEFAULT_CONFIG['set_env'].each do |key, value|
+    config.vm.provision :shell, path: SCRIPT_PATH + "environment-variables.sh", args: [key, value]
+  end
 
   # Port forwarding using the plugin (vagrant-triggers)
   config.trigger.after [:provision, :up, :reload] do
