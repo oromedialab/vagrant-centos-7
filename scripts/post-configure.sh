@@ -10,5 +10,6 @@ sudo sed -i $"s#DocumentRoot \"/var/www/html\"#DocumentRoot \"$1\"#g" /etc/httpd
 # Enable PHP Errors
 sudo sed -i $"s#display_errors = Off#display_errors = On#g" /etc/php.ini
 sudo sed -i $"s#display_startup_errors = Off#display_startup_errors = On#g" /etc/php.ini
-# Restart apache
+# Start/restart apache
+sudo systemctl start httpd.service
 sudo systemctl restart httpd.service
