@@ -7,4 +7,6 @@ fi
 
 printf "\e[31m installing httpd..."
 sudo yum -y install httpd
+sudo systemctl start httpd.service
+sudo systemctl enable httpd.service
 printf "\e[31m✔ httpd installed!"
