@@ -15,10 +15,11 @@ DEFAULT_CONFIG = CONFIG['default']
 VAGRANT_CONFIG = CONFIG['vagrant']
 MYSQL_CONFIG   = CONFIG['mysql']
 GIT_CONFIG     = CONFIG['git']
-SYNC_FOLDER    = VAGRANT_CONFIG['sync_folder']
+HTTPD_CONFIG   = CONFIG['httpd']
+SYNC_FOLDER    = VAGRANT_CONFIG['sync_folder_path']
 SYNC_FOLDER.sub! ':DIRNAME', DIRNAME
 SCRIPT_PATH    = CURRENT_DIR+'/scripts/'
-DOCUMENT_ROOT  = CONFIG['httpd']['document_root']
+DOCUMENT_ROOT  = HTTPD_CONFIG['document_root']
 DOCUMENT_ROOT.sub! ':DIRNAME', DIRNAME
 
 # validate box_ip
@@ -33,7 +34,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.network "forwarded_port", guest: 80, host: VAGRANT_CONFIG['http_port']
   config.vm.network "forwarded_port", guest: 443, host: VAGRANT_CONFIG['https_port']
   config.vm.network "private_network", ip: VAGRANT_CONFIG['box_ip']
-  config.vm.synced_folder '.', SYNC_FOLDER
+  config.vm.synced_folder '.', SYNC_FOLDER, id: VAGRANT_CONFIG['sync_folder_id'], :owner => VAGRANT_CONFIG['sync_folder_owner'], :group => VAGRANT_CONFIG['sync_folder_group']
   config.vm.provider "virtualbox" do |vb|
     vb.customize ["modifyvm", :id, "--memory", VAGRANT_CONFIG['memory']]
   end
@@ -48,7 +49,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision :shell, path: SCRIPT_PATH + "php.sh"
   config.vm.provision :shell, path: SCRIPT_PATH + "composer.sh"
   config.vm.provision :shell, path: SCRIPT_PATH + "puppet.sh"
-  config.vm.provision :shell, path: SCRIPT_PATH + "post-configure.sh", args: [DOCUMENT_ROOT]
+  config.vm.provision :shell, path: SCRIPT_PATH + "post-configure.sh", args: [DOCUMENT_ROOT, HTTPD_CONFIG['user'], HTTPD_CONFIG['group']]
 
   DEFAULT_CONFIG['set_env'].each do |key, value|
     config.vm.provision :shell, path: SCRIPT_PATH + "environment-variables.sh", args: [key, value]
