@@ -40,9 +40,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision :shell, path: SCRIPT_PATH + "wget.sh"
   config.vm.provision :shell, path: SCRIPT_PATH + "zip.sh"
   config.vm.provision :shell, path: SCRIPT_PATH + "git.sh", args: [CONFIGS['configs']['git']['name'], CONFIGS['configs']['git']['email']]
-  config.vm.provision :shell, path: SCRIPT_PATH + "php.sh"
-  config.vm.provision :shell, path: SCRIPT_PATH + "mysql.sh"
   config.vm.provision :shell, path: SCRIPT_PATH + "httpd.sh"
+  config.vm.provision :shell, path: SCRIPT_PATH + "mysql.sh"
+  config.vm.provision :shell, path: SCRIPT_PATH + "php.sh"
   config.vm.provision :shell, path: SCRIPT_PATH + "composer.sh"
   config.vm.provision :shell, path: SCRIPT_PATH + "puppet.sh"
   config.vm.provision :shell, path: SCRIPT_PATH + "post-configure.sh", args: [DOCUMENT_ROOT]
