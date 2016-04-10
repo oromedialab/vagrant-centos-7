@@ -12,6 +12,8 @@ DIRNAME        = File.basename(Dir.getwd)
 CONFIG_FILE    = CURRENT_DIR+'/config.yaml'
 CONFIGS        = YAML.load_file(CONFIG_FILE)
 VAGRANT_CONFIG = CONFIGS['configs']['vagrant']
+MYSQL_CONFIG   = CONFIGS['configs']['mysql']
+GIT_CONFIG     = CONFIGS['configs']['git']
 SYNC_FOLDER    = VAGRANT_CONFIG['sync_folder']
 SYNC_FOLDER.sub! ':DIRNAME', DIRNAME
 SCRIPT_PATH    = CURRENT_DIR+'/scripts/'
@@ -39,9 +41,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision :shell, path: SCRIPT_PATH + "pre-configure.sh"
   config.vm.provision :shell, path: SCRIPT_PATH + "wget.sh"
   config.vm.provision :shell, path: SCRIPT_PATH + "zip.sh"
-  config.vm.provision :shell, path: SCRIPT_PATH + "git.sh", args: [CONFIGS['configs']['git']['name'], CONFIGS['configs']['git']['email']]
+  config.vm.provision :shell, path: SCRIPT_PATH + "git.sh", args: [GIT_CONFIG['name'], GIT_CONFIG['email']]
   config.vm.provision :shell, path: SCRIPT_PATH + "httpd.sh"
-  config.vm.provision :shell, path: SCRIPT_PATH + "mysql.sh"
+  config.vm.provision :shell, path: SCRIPT_PATH + "mysql.sh", args: [MYSQL_CONFIG['username'], MYSQL_CONFIG['password'], MYSQL_CONFIG['database']]
   config.vm.provision :shell, path: SCRIPT_PATH + "php.sh"
   config.vm.provision :shell, path: SCRIPT_PATH + "composer.sh"
   config.vm.provision :shell, path: SCRIPT_PATH + "puppet.sh"
