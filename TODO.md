@@ -1,8 +1,13 @@
 # @TODO
+- Implement bash.sh (aliases)
+- Start services on vagrant reload and vagrant up
+- Fix session write permission issue (sudo chown -R vagrant:vagrant /var/lib/php/session)
 - Fix environment variable reading issue in PHP
 - Allow to change apache user and group from config file (User apache, Group apache) - httpd.conf (DONE)
 - Fix mod_rewrite issue (Change AllowOverride None to AllowOverride All) - http://stackoverflow.com/questions/30855651/how-to-enable-mod-rewrite-on-apache-2-4 (DONE)
 - Install oh-my-zsh
+- Install PHPMyAdmin (http://www.liquidweb.com/kb/how-to-install-and-configure-phpmyadmin-on-centos-7/)
+- Allow user to choose packages (PHP, APache, GIT...)
 - Add commands
 	- mysql.login
 	- [ps aux | egrep '(apache|httpd)'] - find apache user
