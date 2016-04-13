@@ -34,7 +34,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.network "forwarded_port", guest: 80, host: VAGRANT_CONFIG['http_port']
   config.vm.network "forwarded_port", guest: 443, host: VAGRANT_CONFIG['https_port']
   config.vm.network "private_network", ip: VAGRANT_CONFIG['box_ip']
-  config.vm.synced_folder '.', SYNC_FOLDER, id: VAGRANT_CONFIG['sync_folder_id'], :owner => VAGRANT_CONFIG['sync_folder_owner'], :group => VAGRANT_CONFIG['sync_folder_group']
+  config.vm.synced_folder '.', SYNC_FOLDER, nfs: true
   config.vm.provider "virtualbox" do |vb|
     vb.customize ["modifyvm", :id, "--memory", VAGRANT_CONFIG['memory']]
   end
@@ -43,17 +43,18 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision :shell, path: SCRIPT_PATH + "pre-configure.sh"
   config.vm.provision :shell, path: SCRIPT_PATH + "wget.sh"
   config.vm.provision :shell, path: SCRIPT_PATH + "zip.sh"
+  config.vm.provision :shell, path: SCRIPT_PATH + "oh-my-zsh.sh"
   config.vm.provision :shell, path: SCRIPT_PATH + "git.sh", args: [GIT_CONFIG['name'], GIT_CONFIG['email']]
   config.vm.provision :shell, path: SCRIPT_PATH + "httpd.sh"
   config.vm.provision :shell, path: SCRIPT_PATH + "mysql.sh", args: [MYSQL_CONFIG['username'], MYSQL_CONFIG['password'], MYSQL_CONFIG['database']]
   config.vm.provision :shell, path: SCRIPT_PATH + "php.sh"
   config.vm.provision :shell, path: SCRIPT_PATH + "composer.sh"
   config.vm.provision :shell, path: SCRIPT_PATH + "puppet.sh"
-  config.vm.provision :shell, path: SCRIPT_PATH + "post-configure.sh", args: [DOCUMENT_ROOT, HTTPD_CONFIG['user'], HTTPD_CONFIG['group']]
-
   DEFAULT_CONFIG['set_env'].each do |key, value|
     config.vm.provision :shell, path: SCRIPT_PATH + "environment-variables.sh", args: [key, value]
   end
+  config.vm.provision :shell, path: SCRIPT_PATH + "bash.sh"
+  config.vm.provision :shell, path: SCRIPT_PATH + "post-configure.sh", args: [DOCUMENT_ROOT, HTTPD_CONFIG['user'], HTTPD_CONFIG['group']]
 
   # Port forwarding using the plugin (vagrant-triggers)
   config.trigger.after [:provision, :up, :reload] do
