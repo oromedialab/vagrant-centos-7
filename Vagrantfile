@@ -63,6 +63,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         rdr pass on lo0 inet proto tcp from any to '+VAGRANT_CONFIG['box_ip']+' port 443 -> '+VAGRANT_CONFIG['box_ip']+' port '+VAGRANT_CONFIG['https_port']+'
         " | sudo pfctl -ef -; echo "==> Fowarding Ports: 80 -> '+VAGRANT_CONFIG['http_port']+', 443 -> '+VAGRANT_CONFIG['https_port']+' & Enabling pf"'
       )
+      config.vm.provision :shell, path: SCRIPT_PATH + "init.sh"
   end
 
   config.trigger.after [:halt, :destroy] do

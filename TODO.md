@@ -1,4 +1,6 @@
 # @TODO
+- Remove PHPMyadmin session timeout and disable login screen
+- Install phpmyadmin (yum -y install phpmyadmin) [fix forbidden issue : http://stackoverflow.com/questions/23235363/forbidden-you-dont-have-permission-to-access-phpmyadmin-on-this-server]
 - Implement bash.sh (aliases)
 - Start services on vagrant reload and vagrant up
 - Fix session write permission issue (sudo chown -R vagrant:vagrant /var/lib/php/session)
@@ -15,3 +17,5 @@
 	- system commands (g, goto...)
 - Improve
 	- https://github.com/aaronlord/vagrant/blob/master/scripts/base.sh
+- Wordpress script
+	- UPDATE `wp_options` SET option_value='http://192.168.99.5/' WHERE option_name='siteurl' OR option_name='home';
